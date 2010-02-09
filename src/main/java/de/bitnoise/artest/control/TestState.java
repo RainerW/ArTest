@@ -1,5 +1,9 @@
 package de.bitnoise.artest.control;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.JoinPoint.StaticPart;
 import org.aspectj.lang.reflect.SourceLocation;
@@ -11,8 +15,9 @@ public class TestState {
 
 	private TestStep model;
 
-	public TestState(StaticPart thisJoinPointStaticPart) {
+	public TestState(JoinPoint joinPoint) {
 		model = new TestStep();
+		StaticPart thisJoinPointStaticPart = joinPoint.getStaticPart();
 		SourceLocation location = thisJoinPointStaticPart.getSourceLocation();
 		Signature sign = thisJoinPointStaticPart.getSignature();
 		int line = location.getLine();
@@ -21,6 +26,15 @@ public class TestState {
 		model.classMethodName = sign.getName();
 		model.codeLine = line;
 		model.state = State.NOT_EXECUTED;
+		
+		Object[] args = joinPoint.getArgs();
+		if(args!=null) {
+		  List<String> params = new ArrayList<String>();
+		  for(Object arg:args) {
+		    params.add(arg.toString());
+		  }
+		  model.paramValuesAsString=params;
+		}
 	}
 
 	public void before() {

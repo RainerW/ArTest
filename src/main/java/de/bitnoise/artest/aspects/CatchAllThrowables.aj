@@ -16,7 +16,7 @@ public aspect CatchAllThrowables {
 	
  
 	void around() : pc_TargetMethod() {
-		TestState methodCall = ArTestControl.newMethodCall(thisJoinPointStaticPart);
+		TestState methodCall = ArTestControl.newMethodCall(thisJoinPoint);
 		try {
 			methodCall.before();
 			proceed();

@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.JoinPoint.StaticPart;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -37,6 +38,16 @@ public class ArTestControl {
 		System.out.print("\t: ");
 
 		System.out.print(prettyName(testStep));
+		
+		if(testStep.paramValuesAsString!=null) {
+		  System.out.print(" (");
+		  for(String param :testStep.paramValuesAsString) {
+		    System.out.print(" '");
+		    System.out.print(param);
+		    System.out.print("'");
+		  }
+		  System.out.print(" ) ");
+		}
 
 		if (testStep.state != State.SUCCESS) {
 			System.out.print("\t\t");
@@ -92,8 +103,9 @@ public class ArTestControl {
 		return classMethodName.substring(idx + 1);
 	}
 
-	public static TestState newMethodCall(StaticPart thisJoinPointStaticPart) {
+	public static TestState newMethodCall(JoinPoint joinPoint) {
 		TestState state = null;
+		StaticPart thisJoinPointStaticPart = joinPoint.getStaticPart();
 		if (thisJoinPointStaticPart.getSignature() instanceof MethodSignature) {
 			MethodSignature ms = (MethodSignature) thisJoinPointStaticPart
 					.getSignature();
@@ -101,13 +113,13 @@ public class ArTestControl {
 			if (m != null) {
 				EnableArTest anno = m.getAnnotation(EnableArTest.class);
 				if (anno != null) {
-					state = new TestSubState(thisJoinPointStaticPart);
+					state = new TestSubState(joinPoint);
 				}
 			}
 		}
 
 		if (state == null) {
-			state = new TestState(thisJoinPointStaticPart);
+			state = new TestState(joinPoint);
 		}
 		states.add(state);
 		return state;
