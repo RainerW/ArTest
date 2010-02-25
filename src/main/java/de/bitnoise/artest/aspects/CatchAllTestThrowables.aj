@@ -5,13 +5,13 @@ import de.bitnoise.artest.annotation.EnableArTest;
 import de.bitnoise.artest.control.ArTestControl;
 import de.bitnoise.artest.control.TestState;
 
-public aspect CatchAllThrowables {
+public aspect CatchAllTestThrowables {
 
 	pointcut pc_TargetMethod()  : 
 	call( void * (..) ) 
-	&& cflow( execution( @de.bitnoise.artest.annotation.EnableArTest * *(..) ))
-	&& withincode( @de.bitnoise.artest.annotation.ArTestSubStep * *(..) )
-//	&& withincode( @de.bitnoise.artest.annotation.EnableArTest * *(..) )
+//	&& cflow( execution( @de.bitnoise.artest.annotation.EnableArTest * *(..) ))
+//	&& withincode( @de.bitnoise.artest.annotation.ArTestSubStep * *(..) )
+	&& withincode( @de.bitnoise.artest.annotation.EnableArTest * *(..) )
 	&& !within(de.bitnoise.artest..*)
 //	&& @annotation(anno)
 	;
